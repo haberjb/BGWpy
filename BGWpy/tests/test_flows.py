@@ -5,14 +5,14 @@ from copy import copy
 from .test_BGW_tasks import TestBGWTasksMaker
 
 from .. import data
-from .. import Structure, GWFlow, BSEFlow
+from .. import Structure, GWFlow, BSEFlow, convGWFlow
 
 class TestFlows(TestBGWTasksMaker):
 
     common_kwargs = copy(TestBGWTasksMaker.common_kwargs)
     common_kwargs.update(
         dft_flavor='espresso',
-        nbnd_fine=9,
+        nbnd_fine=20,
         kshift=[.5,.5,.5],
         qshift = [.001,.0,.0],
         sigma_extra_lines = ['screening_semiconductor'],
@@ -32,6 +32,9 @@ class TestFlows(TestBGWTasksMaker):
         absorption_extra_variables = {
             'energy_resolution' : 0.15,
             },
+        chi_cut=[5.0,10.0],
+        chi_bands=[10,15],
+        sigma_bands=[10,15],
         )
 
     def get_gwflow(self):
@@ -42,11 +45,15 @@ class TestFlows(TestBGWTasksMaker):
         kwargs = copy(self.common_kwargs)
         return BSEFlow(dirname = os.path.join(self.tmpdir, 'BSE'), **kwargs)
 
+    def get_convgwflow(self):
+        kwargs = copy(self.common_kwargs)
+        return convGWFlow(dirname = os.path.join(self.tmpdir, 'convGW'), **kwargs)
+
     def test_gwflow(self):
         """Test GWFlow."""
         flow = self.get_gwflow()
         flow.write()
-        flow.run()
+        #flow.run()
         flow.report()
         for task in flow.tasks:
             self.assertCompleted(task)
@@ -55,7 +62,16 @@ class TestFlows(TestBGWTasksMaker):
         """Test BSEFlow."""
         flow = self.get_bseflow()
         flow.write()
-        flow.run()
+        #flow.run()
+        flow.report()
+        for task in flow.tasks:
+            self.assertCompleted(task)
+ 
+    def test_convgwflow(self):
+        """Test convGWFlow."""
+        flow = self.get_convgwflow()
+        flow.write()
+        #flow.run()
         flow.report()
         for task in flow.tasks:
             self.assertCompleted(task)
