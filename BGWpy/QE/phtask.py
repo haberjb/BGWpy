@@ -78,11 +78,12 @@ class QePhTask(QeDFPTTask):
         self.runscript['PHFLAGS'] = kwargs.get('PHFLAGS', '')
 
         # In QE qpts must be specified in cartesian coordinates..
+        # Perhaps this should be done in BGW/kgrid.py ?
         qpts, wtqs = self.get_qpts(**kwargs)
+        qpts = np.array(qpts).T
         a = self.structure.lattice.a
-        blat = self.structure.lattice.reciprocal_lattice_crystallographic.matrix * a
-        b_inv = np.linalg.inv(blat)
-        np.dot(b_inv
+        lat = self.structure.lattice.matrix / a
+        qpts_cart = np.dot(lat, qpts)
 
         self.charge_density_fname = kwargs['charge_density_fname']
 
@@ -100,7 +101,7 @@ class QePhTask(QeDFPTTask):
             self.pseudo_dir,
             self.pseudos,
             self.structure,
-            qpts,
+            np.transpose(qpts_cart),
             wtqs,
             )
 

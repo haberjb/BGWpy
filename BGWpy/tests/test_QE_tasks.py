@@ -5,6 +5,7 @@ from . import TestTask
 from .. import data
 from .. import Structure, QeScfTask
 from .. import QeWfnTask, Qe2BgwTask
+from .. import QePhTask
 
 # Note: The tests are redundant, because
 # tests cannot be interdependent.
@@ -20,6 +21,7 @@ class TestQETasksMaker(TestTask):
         pseudos = data.pseudos_GaAs,
         structure = Structure.from_file(_structure_fname),
         ngkpt = [2,2,2],
+        ngqpt = [2,2,2],
         kshift = [.5,.5,.5],
         ecutwfc = 8.0,
         nbnd = 9,
@@ -61,6 +63,20 @@ class TestQETasksMaker(TestTask):
 
         return pw2bgwtask
 
+    def get_phtask(self, scftask, **kwargs):
+        """Construct a QePhTask."""
+        for key, val in self.common_kwargs.iteritems():
+            kwargs.setdefault(key, val)
+
+        kwargs.setdefault('dirname', os.path.join(self.tmpdir, 'Ph'))
+
+        phtask = QePhTask(
+            charge_density_fname = scftask.charge_density_fname,
+            data_file_fname = scftask.data_file_fname,
+            groundstate_wfc_dirname = os.path.join(scftask.dirname, scftask.savedir)
+            **kwargs)
+
+        return phtask
 
 class TestQETasks(TestQETasksMaker):
 
@@ -90,6 +106,17 @@ class TestQETasks(TestQETasksMaker):
         pw2bgwtask = self.get_pw2bgwtask(wfntask)
 
         for task in (scftask, wfntask, pw2bgwtask):
+            task.write()
+            task.run()
+            task.report()
+            self.assertCompleted(task)
+
+    def test_phtask(self):
+        """Test density and phonon calculation."""
+        scftask = self.get_scftask()
+        phtask = self.get_phtask()
+
+        for task in (scftask, phtask):
             task.write()
             task.run()
             task.report()

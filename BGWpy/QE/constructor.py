@@ -45,7 +45,6 @@ def get_ph_input(prefix, pseudo_dir, pseudos, structure, qpts, wtqs):
 
     inp.phonons.update(
         prefix = prefix,
-        pseudo_dir = pseudo_dir,
         qplot = True,
         ldisp = True,
         tr2_ph = 1e-16,
