@@ -1,4 +1,5 @@
 from .pwscfinput import PWscfInput
+from .phscfinput import PHscfInput
 
 
 def get_scf_input(prefix, pseudo_dir, pseudos, structure, ecutwfc, kpts, wtks):
@@ -38,5 +39,19 @@ def get_bands_input(prefix, pseudo_dir, pseudos, structure, ecutwfc, kpts, wtks,
         inp.system['nbnd'] = nbnd
     return inp
 
+def get_ph_input(prefix, pseudo_dir, pseudos, structure, qpts, wtqs):
+    """Construct a Quantum Espresso scf input."""
+    inp = PHscfInput()
 
+    inp.phonons.update(
+        prefix = prefix,
+        pseudo_dir = pseudo_dir,
+        qplot = True,
+        ldisp = True,
+        tr2_ph = 1e-16,
+        )
 
+    inp.set_qpoints_cart(qpts, wtqs)
+    inp.pseudos = pseudos
+
+    return inp
