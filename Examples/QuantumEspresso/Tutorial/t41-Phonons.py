@@ -29,7 +29,7 @@ task = QePhTask(
 
     # These are the default parameters for the MPI runner.
     # Please adapt them to your needs.
-    nproc = 32,
+    nproc = 8,
     nproc_per_node = 2,
     mpirun = 'srun',
     nproc_flag = '-n',

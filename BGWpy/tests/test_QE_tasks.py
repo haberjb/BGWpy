@@ -73,7 +73,7 @@ class TestQETasksMaker(TestTask):
         phtask = QePhTask(
             charge_density_fname = scftask.charge_density_fname,
             data_file_fname = scftask.data_file_fname,
-            groundstate_wfc_dirname = os.path.join(scftask.dirname, scftask.savedir)
+            groundstate_wfc_dirname = os.path.join(scftask.dirname, scftask.savedir),
             **kwargs)
 
         return phtask
@@ -114,7 +114,7 @@ class TestQETasks(TestQETasksMaker):
     def test_phtask(self):
         """Test density and phonon calculation."""
         scftask = self.get_scftask()
-        phtask = self.get_phtask()
+        phtask = self.get_phtask(scftask)
 
         for task in (scftask, phtask):
             task.write()

@@ -13,7 +13,10 @@ class Card(list, Writable):
         self.quotes = quotes
 
     def __str__(self):
-        S = '{} {}\n'.format(self.name, self.option)
+        if self.name is None:
+            S = ''
+        else:
+            S = '{} {}\n'.format(self.name, self.option)
         for val in self:
             S += '   {}\n'.format(fortran_str(val, self.quotes))
 

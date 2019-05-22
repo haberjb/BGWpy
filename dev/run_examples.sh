@@ -11,6 +11,7 @@ rm -rf 23-Kernel
 rm -rf 24-Absorption
 rm -rf 32-GW
 rm -rf 33-BSE
+rm -rf 41-Phonons
 
 python t11-Density.py
 python t12-Wfn.py
@@ -24,3 +25,4 @@ python t23-Kernel.py
 python t24-Absorption.py
 python t32-GW.py
 python t33-BSE.py
+python t41-Phonons.py
